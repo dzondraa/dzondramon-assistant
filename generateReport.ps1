@@ -21,8 +21,8 @@ function Format-Date {
         $end = $interval.Split('-')[1]
         $numDays = [int]$end - [int]$start + 1
  
-        $dateStart[0] = $start
-        $dateEnd[0] = $end
+        $dateStart[1] = $start
+        $dateEnd[1] = $end
         $output1 = $dateStart -join '/'
         $output2 = $dateEnd -join '/'
         
@@ -40,7 +40,7 @@ function Format-Date {
 # EXECUTION 
 
 $obj = New-Object -ComObject Excel.Application
-$wb = $obj.Workbooks.Open("D:\Users\v-dnikolic\Downloads\Top 5000 Incidents.csv")
+$wb = $obj.Workbooks.Open("D:\Downloads\Top 5000 Incidents.csv")
 $sheet = $wb.WorkSheets.Item(1)
 $col = $sheet.Columns.Item(1)
 
@@ -62,21 +62,23 @@ $obj.Quit()
 Write-Host "Creating new file..." -ForegroundColor Yellow 
 $newValue = "Support tickets processing: " + $str
 $obj1 = New-Object -ComObject Excel.Application
-$wb1 = $obj1.Workbooks.Open("D:\Users\v-dnikolic\Downloads\invoice.xlsx")
+$wb1 = $obj1.Workbooks.Open("D:\Downloads\invoice.xlsx")
 $sheet1 = $wb1.WorkSheets.Item(1)
 
-$sheet1.Cells(17,2) = $newValue;
+$sheet1.Cells(16,2) = $newValue;
 #Month
 $Month = Get-Date -UFormat %B
 $name = "Djordje Nikolic Invoice - " + $Month
 $savePath = "C:\Users\v-dnikolic\Desktop\" + $name + ".xlsx"
 
 $total = Format-Date($oncallDates)
-$sheet1.Cells(19,2) = $total;
+$sheet1.Cells(18,2) = $total;
+$sheet1.Cells(19,2) = $additional1;
+$sheet1.Cells(20,2) = $additional2;
 $wb1.SaveAs($savePath)
 Write-Host "Dzondramon generated report for" $Month'!' -ForegroundColor Green 
 $wb1.Close()
 $obj1.Quit()
-Remove-Item "D:\Users\v-dnikolic\Downloads\Top 5000 Incidents.csv"
+Remove-Item "D:\Downloads\Top 5000 Incidents.csv"
 Write-Host "Total tasks completed: $counter" -ForegroundColor Cyan
 Write-Host "Number of on-call weeks: $totalWeeks" -ForegroundColor Cyan
